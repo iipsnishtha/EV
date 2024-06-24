@@ -1,0 +1,793 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <termios.h>
+
+
+
+struct admininfo{
+    char rname,location[50],operatorname;
+    int id,no_of_charging_points;
+};
+
+struct userinfo{
+    char customername[20];
+    int contact[11];
+    char userLocation[50];
+    char searchhstation[50];
+};
+
+int val;//find nearestcharge station
+
+
+ //validators
+ 
+
+void usernamenNpassword(void);
+void usernamenNpassword(){
+    char mailId[50], password[25], verification[25];
+    unsigned int i;
+    int digit = 0, upper_case = 0, lower_case = 0, special_char= 0;
+    int adigit = 0, alower_case = 0, aspecial_char1= 0,aspecial_char2= 0;
+    
+    bacl_line:
+   printf("\nEnter Your E-Mail ID or USERNAME : ");
+   scanf("%s",mailId);
+   
+    size_t a = strlen(mailId);
+   if(a < 10)
+    {
+            printf("\nError:Email should contain minimum 8 characters");
+    }
+   else
+    {
+            for(i = 0; mailId[i] != '\0'; i++)
+            {
+                    
+
+                    if(mailId[i] >= 'a' && mailId[i] <=                                         'z')
+                            alower_case++;
+                    if(mailId[i] >= '0' && mailId[i] <=                                         '9')
+                            adigit++;
+
+                    if(mailId[i] == '.')
+                            aspecial_char1++;
+                    if(mailId[i] == '@')
+                            aspecial_char2++;
+            }
+    }
+   
+   if(alower_case == 0)
+    {
+            printf(" \nAll Character must be  Lower Case\n");
+            goto bacl_line;
+          
+    }
+   if(adigit == 0)
+    {
+            printf("There must be atleast one Digit\n");
+            goto bacl_line;
+            
+    }
+    
+     if(aspecial_char2 == 0)
+    {
+            printf("There must be atleast one  '@' Special Character\n");
+            goto bacl_line;
+           
+    }
+   
+    if(aspecial_char1 == 0)
+    {
+            printf("There must be atleast one  '.'  Special Character\n");
+            goto bacl_line;
+           
+    }
+   
+   
+          printf("Enter Your Password: ");
+            scanf("%s",password);
+            size_t b = strlen(password);
+            
+           if(b < 8)
+            {
+                    printf("\nError:Password should contain minimum 8 characters");
+            }
+           else
+            {
+                    for(i = 0; password[i] != '\0'; i++)
+                    {
+                            if(password[i] >= 'A' && password[i] <=                                         'Z')
+                                    upper_case++;
+    
+                            if(password[i] >= 'a' && password[i] <=                                         'z')
+                                    lower_case++;
+                            if(password[i] >= '0' && password[i] <=                                         '9')
+                                    digit++;
+                            if(password[i] == '@' || password[i] == '#'                                         || password[i] == '$')
+                                    special_char++;
+                    }
+            }
+            
+           if(upper_case == 0)
+            {
+                    printf("There must be at least one Upper Case\n");
+           }
+           if(lower_case == 0)
+            {
+                    printf("There must be atleast one Lower Case\n");
+            }
+           if(digit == 0)
+            {
+                    printf("There must be atleast one Digit\n");
+            }
+           if(special_char == 0)
+            {
+                    printf("There must be atleast one Special Character\n");
+            }
+           else
+            {
+                    printf("Confirm your Password\n");
+                    scanf("%s",verification);
+                   if(strcmp(password,verification) == 0)
+                    {
+                            printf("Logged In Successful!");
+                    }
+    
+                    else
+                     printf("Invalid");
+            }
+}
+
+
+
+// Bidding with view
+void bidding(void);
+ void bidding(){
+    
+    FILE *ifp;
+        ifp = fopen("/Users/yatharthsharma/Desktop/EV Folder/Testprogram/Testprogram/Base.lproj/input.txt", "r+");
+     if(ifp == NULL)
+        {
+           printf("Error!\n");
+           exit(1);
+        }
+
+     
+        printf("\n\nWelcome to the Bidding\n");
+ 
+        printf("\n\nPlease make a selection from the following:\n");
+     
+        
+       
+     
+     float au1_start=0.0,au2_start=0.0, au3_start = 0.0, au4_start = 0.0, au5_start = 0.0;
+     int charge_point1,charge_point2,charge_point3,charge_point4,charge_point5;
+     char location1[50],location2[50],location3[50],location4[50],location5[50];
+     
+        char choice [20];
+         int bid1=0;
+         int bid2=0;
+         int bid3=0;
+         int bid4=0;
+         int bid5=0;
+         int number;
+         
+     
+     
+ 
+     
+        
+        fscanf(ifp, "%s %f %d", location1, &au1_start, &charge_point1);
+        fscanf(ifp, "%s %f %d", location2, &au2_start, &charge_point2);
+        fscanf(ifp, "%s %f %d", location3,&au3_start, &charge_point3);
+        fscanf(ifp, "%s %f %d", location4,&au4_start, &charge_point4);
+        fscanf(ifp, "%s %f %d", location5,&au5_start, &charge_point5);
+     
+     float avg1 = au1_start/charge_point1;
+     float avg2 = au2_start/charge_point2;
+     float avg3 = au3_start/charge_point3;
+     float avg4 = au4_start/charge_point4;
+     float avg5 = au5_start/charge_point5;
+     
+        
+     
+     printf("\nAVAILABLE LACATION FOR BIDDING \n");
+     
+                    printf("\nNUMBER\tLOCATION\t\tMin.Charge points\t\tMinimum Bid\n");
+     
+               
+                    printf("1        %s\t\t\t\t\t%d\t\t\t\t₹%f\n", location1, charge_point1, au1_start);
+               
+     
+                    printf("2        %s\t\t\t\t\t%d\t\t\t\t₹%f\n", location2,charge_point2, au2_start);
+                
+     
+                    printf("3        %s\t\t\t\t\t%d\t\t\t\t₹%f\n", location3,charge_point3, au3_start);
+                
+     
+                    printf("4        %s\t\t\t\t\t%d\t\t\t\t₹%f\n", location4,charge_point4, au4_start);
+               
+                   
+                    printf("5        %s\t\t\t\t\t%d\t\t\t\t₹%f\n", location5,charge_point5, au5_start);
+               
+            
+     printf("\n\nEnter the Number of location Which would you like to bid on?\n");
+     scanf("%d", &number);
+ bid_line:
+     printf("\nProcess of a Bidding [bid]\n Manage Bidding [m]\n Close Bidding(close)\n");
+     scanf("%s", choice);
+     
+        if (strcmp(choice, "bid") == 0) {
+            
+               
+     
+                    switch (number) {
+                        case 1:
+                            printf("The minimum bid is ₹%f.\n", au1_start);
+                            printf("How much would you like to bid?\n");
+                            scanf("%d", &bid1);
+                            
+                            break;
+                        case 2:
+                            printf("The minimum bid is ₹%f.\n", au2_start);
+                            printf("How much would you like to bid?\n");
+                            scanf("%d", &bid2);
+                             
+                            
+                            break;
+                        case 3:
+                            printf("The minimum bid is ₹%f.\n", au3_start);
+                            printf("How much would you like to bid?\n");
+                            scanf("%d", &bid3);
+                            
+                            break;
+                        case 4:
+                            printf("The minimum bid is ₹%f.\n", au4_start);
+                            printf("How much would you like to bid?\n");
+                            scanf("%d", &bid4);
+                            
+                        case 5:
+                            printf("The minimum bid is ₹%f.\n", au5_start);
+                            printf("How much would you like to bid?");
+                            scanf("%d", &bid5);
+                            
+                        default:
+                            printf("\n");
+                    }
+            
+            printf("\n\nYOUR BID IS UNDER PROCESS ");
+            goto bid_line;
+            
+                }
+        else if (strcmp(choice, "m") == 0) {
+            int win_bid=0;
+            float arr[]={avg1,avg2,avg3,avg4,avg5,};
+            for(int i=1;i<5;i++){
+                if(arr[i-1]<arr[i]){
+                    win_bid=i+1;
+                    
+                }
+            }
+            
+            
+            switch(win_bid){
+                case 1:
+                    if(bid1<au1_start){
+                        printf("\nSorry, that bid is not high enough.\n");
+                        
+                    }
+                    else
+                        printf("\nSelected Bid is %d for %s with %d Charging points", win_bid, location1, charge_point1);
+                        
+                case 2:
+                    if(bid2<au2_start){
+                        printf("Sorry, that bid is not high enough.\n");
+                        
+                    }
+                    else
+                        printf("Selected Bid is %d for %s with %d Charging points", win_bid, location2, charge_point2);
+                case 3:
+                    if(bid3<au3_start){
+                        printf("Sorry, that bid is not high enough.\n");
+                        
+                    }
+                    else
+                        printf("Selected Bid is %d for %s with %d Charging points", win_bid, location3, charge_point3);
+                case 4:
+                    if(bid4<au4_start){
+                        printf("Sorry, that bid is not high enough.\n");
+                        
+                    }
+                    else
+                        printf("Selected Bid is %d for %s with %d Charging points", win_bid, location4, charge_point4);
+                case 5:
+                    if(bid5<au5_start){
+                        printf("Sorry, that bid is not high enough.\n");
+                        
+                    }
+                    else
+                        printf("Selected Bid is %d for %s with %d Charging points", win_bid, location5, charge_point5);
+            }
+            
+           
+            goto bid_line;
+        }
+        else{
+            printf("\nBidding is Closed.\n");
+            
+    }
+     
+    // formatting
+        printf("\n");
+     
+    //close file
+        fclose(ifp);
+     
+     
+  
+    
+}
+/*void bidding(){
+    struct compbid{
+        char organisationName[20];
+        int amount;
+        int noofchargestation;
+        
+    };
+    
+    FILE *bidding;
+    
+    bidding=fopen("/Users/yatharthsharma/Desktop/EV Folder/Testprogram/Testprogram/bidinfo.txt","w");
+    if(bidding==NULL){
+        fprintf(stderr,"\n error in opening a file");
+        exit(0);
+    }
+    
+    struct compbid a;
+    
+    
+    printf("enter the name of organisation: ");
+    scanf("%s",a.organisationName);
+    puts(a.organisationName);
+    printf("enter the bidding amount: ");
+    scanf("%d",&a.amount);
+    printf("enter the no. of charging point: ");
+    scanf("%d",&a.noofchargestation);
+  //  fwrite(&a , sizeof(struct compbid), 1, bidding);
+    fclose(bidding);
+    
+}*/
+    
+    
+    
+
+void registerCharging(void);
+void registerCharging(){
+    FILE *ifp;
+    struct admininfo av;
+    char choice='y';
+    
+    
+    ifp=fopen("/Users/yatharthsharma/Desktop/EV Folder/Testprogram/Testprogram/registercharge.txt","w+");
+    
+    while(choice!='n'){
+        printf("\n\nEnter id :");
+    scanf("%d", &av.id);
+    fprintf(ifp,"\n%d\t",av.id);
+    
+    printf("\n\nEnter  Station Name: ");
+    scanf("%s", &av.rname);
+    fprintf(ifp,"%s\t",&av.rname);
+    
+    printf("\n\nEnter Location: ");
+    scanf("%s", av.location);
+    fprintf(ifp,"%s\t",av.location);
+    
+    printf("\n\nEnter Number Of Charge Points: ");
+    scanf("%d", &av.no_of_charging_points);
+    fprintf(ifp,"%d\t",av.no_of_charging_points);
+    
+    printf("\n\nEnter Operator Name: ");
+    scanf("%s", &av.operatorname);
+    fprintf(ifp,"%s\t",&av.operatorname);
+    //fwrite(&av, sizeof(av),1,ifp);
+    
+    printf("\n\nEnter Your Choice YES(y) OR NO(n) For more Register: ");
+        scanf("%s",&choice);
+    
+}
+    fclose(ifp);
+    
+        printf("\n\nRegistered successfully...\n\n");
+        
+    
+        
+    
+}
+void searchStation(void);
+void searchStation(){
+    FILE *fpfp = NULL;
+    
+  
+    int co_1,co_2,co_3,co_4,co_5,co_6,co_7,co_8,co_9,co_10,n1,n2,n3,n4,n5,n6,n7,n8,n9,n10;
+    char l1[50],l2[50],l3[50],l4[50],l5[50],l6[50],l7[50],l8[50],l9[50],l10[50];
+    fpfp=fopen("/Users/yatharthsharma/Desktop/EV Folder/Testprogram/Testprogram/userinfo.txt","r+");
+        
+    fscanf(fpfp, "%s %d%d ", l1,&n1,&co_1);
+    fscanf(fpfp, "%s %d%d ", l2,&n2,&co_2);
+    fscanf(fpfp, "%s %d%d ", l3,&n3,&co_3);
+    fscanf(fpfp, "%s %d%d ", l4,&n4,&co_4);
+    fscanf(fpfp, "%s %d%d ", l5,&n5,&co_5);
+    fscanf(fpfp, "%s %d%d ", l6,&n6,&co_6);
+    fscanf(fpfp, "%s %d%d ", l7,&n7,&co_7);
+    fscanf(fpfp, "%s %d%d ", l8,&n8,&co_8);
+    fscanf(fpfp, "%s %d%d ", l9,&n9,&co_9);
+    fscanf(fpfp, "%s %d%d ", l10,&n10,&co_10);
+    
+    printf("\n NO. Location\t\tNo.Charge points\tContact No.\n");
+
+
+    printf("1.   %s\t\t\t\t%d\t\t\t\t%d   \n", l1,n1,co_1);
+    printf("2.   %s\t\t\t\t%d\t\t\t\t%d   \n", l2,n2,co_2);
+    printf("3.   %s\t\t\t\t%d\t\t\t\t%d   \n", l3,n3,co_3);
+    printf("4.   %s\t\t\t%d\t\t\t\t%d   \n", l4,n4,co_4);
+    printf("5.   %s\t\t\t\t%d\t\t\t\t%d   \n", l5,n5,co_5);
+    printf("6.   %s\t\t\t\t%d\t\t\t\t%d   \n", l6,n6,co_6);
+    printf("7.   %s\t\t\t%d\t\t\t\t%d   \n", l7,n7,co_7);
+    printf("8.   %s\t\t\t\t%d\t\t\t\t%d   \n", l8,n8,co_8);
+    printf("9.   %s\t\t\t\t%d\t\t\t\t%d   \n", l9,n9,co_9);
+    printf("10.   %s\t\t\t%d\t\t\t\t%d   \n", l10,n10,co_10);
+    
+    
+    
+    
+
+    printf("enter station you want to search :");
+    scanf("%d",&val);
+    switch (val) {
+        case 1:
+            printf("13 Charge Check Point In This City");
+            break;
+        case 2:
+            printf("Sorry No Charge Check Point In This City");
+            break;
+        case 3:
+            printf("3 Charge Check Point In This City");
+            break;
+        case 4:
+            printf("5 Charge Check Point In This City");
+            break;
+        case 5:
+            printf("Sorry No Charge Check Point In This City");
+            break;
+        case 6:
+            printf("8 Charge Check Point In This City");
+            break;
+        case 7:
+            printf("3 Charge Check Point In This City");
+            break;
+        case 8:
+            printf("2 Charge Check Point In This City");
+            break;
+        case 9:
+            printf("Sorry No Charge Check Point In This City");
+            break;
+        case 10:
+            printf("Sorry No Charge Check Point In This City");
+            break;
+            
+        default:
+            break;
+            
+            
+    }
+    printf("\n");
+}
+
+
+void nearestStation(void);
+void nearestStation(){
+    
+    printf("--------:Your Nearest Charge Station are:--------\n\n");
+    
+    switch (val) {
+        case 1:
+            printf("4. Gwalior(5km)  7. Chhindwara  10. Ratlam");
+            break;
+        case 2:
+            printf(" 3. Bhopal 7. Chhindwara 8. Itarsi ");
+            break;
+        case 3:
+            printf("2. Dewas 4. Gwalior 6.Sagar");
+            break;
+        case 4:
+            printf("5. Ujjain 6.Sagar 3. Bhopal");
+            break;
+        case 5:
+            printf("4. Gwalior 5. Ujjain 6.Sagar");
+            break;
+        case 6:
+            printf("8 Charge Check Point In This City");
+            break;
+        case 7:
+            printf("Dewas 3. Bhopal 4. Gwalior");
+            break;
+        case 8:
+            printf("3. Bhopal 5. Ujjain 6.Sagar");
+            break;
+        case 9:
+            printf("7. Chhindwara 8. Itarsi 10. Ratlam");
+            break;
+        case 10:
+            printf("7. Chhindwara 8. Itarsi 9. Sehore");
+            break;
+            
+        default:
+            break;
+            
+            
+    }
+    
+}
+void userView(void);
+void userView(){
+    struct userinfo uv;
+    FILE *fpfp = NULL;
+    char cname[50],cloca = '\0';
+    int cno = 0;
+    
+    
+    fpfp=fopen("/Users/yatharthsharma/Desktop/EV Folder/Testprogram/Testprogram/searchstation.txt","r+");
+    fscanf(fpfp, "%s %s%d ", &cloca, cname,&cno);
+
+    printf("--------:Welcome to User View  page:--------\n\n");
+    
+   
+    printf("\n\nCustomer Name: %s\nCostomer Location: %c \nCustomer Contact: %d\n\n",cname,cloca,cno);
+    
+    
+    //fprintf("\n\searched location: %d",uv.location);
+    
+     
+    
+}
+void adminView(void);
+void adminView(){
+    
+    //struct admininfo av;
+    int a1 = 0,a2 = 0,a3 =0,a4=0,a5=0,b1 = 0,b2 = 0,b3=0,b4=0,b5=0;
+    char n1[20],n2[20],n3[20],n4[20],n5[20],o1[20],o2[20],o3[20],o4[20],o5[20],l1[20],l2[20],l3[20],l4[20],l5[20];
+    
+       FILE *fp;
+    
+    fp = fopen("/Users/yatharthsharma/Desktop/EV Folder/Testprogram/program.txt","r+");
+
+    fscanf(fp, "%s%d%s%s%d",n1, &a1, l1, o1, &b1);
+    fscanf(fp, "%s%d%s%s%d",n2, &a2, l2, o2, &b2);
+    fscanf(fp, "%s%d%s%s%d",n3, &a3, l3, o3, &b3);
+    fscanf(fp, "%s%d%s%s%d",n4, &a4, l4, o4, &b4);
+    fscanf(fp, "%s%d%s%s%d",n5, &a5, l5, o5, &b5);
+
+
+    printf("\n Name\t\tID\t  Location\tOperatorNamee\tNo.Charge points\t\n");
+
+
+    printf("1.%s\t%d\t\t%s    \t\t%s\t\t%d\t\t\n", n1, a1, l1, o1, b1);
+
+
+    printf("2.%s\t%d\t\t%s    \t\t%s\t\t%d\t\n", n2, a2, l2, o2, b2);
+
+
+    printf("3.%s\t%d\t\t%s    \t\t%s\t\t%d\t\n", n3, a3, l3, o3, b3);
+
+
+    printf("4.%s\t\t%d\t\t%s  \t%s\t\t%d\t\n", n4, a4, l4, o4, b4);
+
+   
+    printf("5.%s\t\t%d\t\t%s  \t%s\t\t%d\t\n", n5, a5, l5, o5, b5);
+    
+   
+    fclose(fp);
+    
+}
+void updateCharges(void);
+void updateCharges(){
+   /* FILE *ffp;
+    
+    adminview();
+    
+    ffp = fopen("/Users/yatharthsharma/Desktop/EV Folder/Testprogram/program.txt","w+");
+    
+    int a1 = 0,a2 = 0,a3 =0,a4=0,a5=0,b1 = 0,b2 = 0,b3=0,b4=0,b5=0;
+    char n1[20],n2[20],n3[20],n4[20],n5[20],o1[20],o2[20],o3[20],o4[20],o5[20],l1[20],l2[20],l3[20],l4[20],l5[20];
+    fscanf(ffp, "%s%d%s%s%d",n1, &a1, l1, o1, &b1);
+    fscanf(ffp, "%s%d%s%s%d",n2, &a2, l2, o2, &b2);
+    fscanf(ffp, "%s%d%s%s%d",n3, &a3, l3, o3, &b3);
+    fscanf(ffp, "%s%d%s%s%d",n4, &a4, l4, o4, &b4);
+    fscanf(ffp, "%s%d%s%s%d",n5, &a5, l5, o5, &b5);
+    
+ 
+   
+    */
+    int cp;
+    printf("--------:Welcome to Update charging page:--------\n\n");
+    
+    printf("Enter  new Number Of Charging Points:");
+    scanf("%d",&cp);
+    printf("Other Informations");
+   // fclose(ffp);
+    
+}
+
+void User(void);
+void User()
+{
+    struct userinfo uv;
+    FILE *iifp;
+        iifp = fopen("/Users/yatharthsharma/Desktop/EV Folder/Testprogram/Testprogram/userinfo.txt", "w+");
+     if(iifp == NULL)
+        {
+           printf("Error!");
+           exit(1);
+        }
+   
+    usernamenNpassword();
+    
+    
+    printf("\nEnter Customer Full Name: ");
+    scanf("%s",uv.customername);
+   // fprintf(iifp,"\n%s\t",uv.customername);
+    
+    printf("\nEnter Customer Contact Number: ");
+    scanf("%d",uv.contact);
+    //fprintf(iifp,"\n%d\t",uv.contact);
+    
+    printf("\nEnter Customer Location: ");
+    scanf("%s",uv.userLocation);
+    //fprintf(iifp,"\n%s\t",uv.userLocation);
+    
+    fwrite(&uv , sizeof(uv), 10, iifp );
+    fclose(iifp);
+   
+     
+        printf("--------:Welcome to User page:-------- ");
+        int x;
+        printf("\n\t\tEnter the choice\n");
+back_line:
+                printf("1.Search Station \n2.Nearest Station \n3.View\n4.Logout\n");
+                //printf("\n\n Enter choice: \n\n");
+                scanf("%d", &x);
+          
+               
+        switch(x) {
+            case 1:
+                searchStation();
+                goto back_line;
+                break;
+            case 2:
+                nearestStation();
+                goto back_line;
+                break;
+            case 3:
+                userView();
+                goto back_line;
+                break;
+            case 4:
+                printf("Logout Succesfully\n");
+                break;
+            default:
+                printf("Invalid");
+            }
+        printf("\n\nYour information is Updated\n\n");
+    
+        
+               
+
+}
+
+void Admin(void);
+void Admin(){
+    
+        usernamenNpassword();
+    
+        printf("-------:Welcome to Admin page:--------\n\n");
+         int x;
+
+        printf("\n\t\tEnter the choice\n");
+        admin_line:
+        printf("1. Registration Charging \n2. Update Changes\n3. Admin View\n4. Logout \n");
+            //printf("\n\n Enter choice: \n\n");
+        scanf("%d", &x);
+               
+
+        switch(x) {
+            case 1:
+                registerCharging();
+                goto admin_line;
+                break;
+            case 2:
+                updateCharges();
+                goto admin_line;
+                break;
+            case 3:
+                adminView();
+                goto admin_line;
+                break;
+            case 4:
+                printf("Logout Succesfully\n\n");
+                break;
+            default:
+                printf("Invalid");
+            }
+        printf("\n\nYour information is Updated\n\n");
+      
+               
+}
+void CompanyAdmin(void);
+void CompanyAdmin(){
+    usernamenNpassword();
+
+    
+comp_line:
+    printf("--------:Welcome to Company Admin page:--------\n\n");
+    int x;
+    printf("\n\t\tEnter the choice\n\n");
+    back_line:
+    printf("1.Bidding \n2.Logout \n");
+    //printf("\n\n Enter choice: \n\n");
+    scanf("%d", &x);
+          
+          
+   switch(x) {
+        case 1:
+            bidding();
+           goto comp_line;
+            break;
+        case 2:
+            printf("Logout Succesfully\n");
+            
+            break;
+        default:
+            printf("Invalid\n");
+        }
+    
+    printf("\n\nYour information is Updated\n\n");
+    
+       
+}
+
+int main()
+{
+        int n;
+        printf("-------:EV Charging Infrastruct:------\n\n");
+                admin_switch:
+main_line:
+                printf("\n\t\tEnter the choice\n\n");
+                printf("1. Admin \n2. CompanyAdmin \n3. User \n4. EXIT \n");
+                //printf("\n\n Enter choice: \n\n");
+                scanf("%d", &n);
+                switch(n)
+                {
+                case 1:
+                    Admin();
+                        goto main_line;
+                    break;
+                case 2:
+                    CompanyAdmin();
+                        goto main_line;
+                    break;
+                case 3:
+                    User();
+                        goto main_line;
+                    break;
+                case 4:
+                        exit(0);
+                default:
+                    printf("Invalid Input\n");
+                }
+        if(n>3){
+         goto admin_switch;
+        }
+return 0;
+}
